@@ -13,9 +13,9 @@
 
 ## Features
 
-- Search and replace text in any combination of workspace files — **only the files you explicitly select** are modified.
-- A focused, four-step wizard accessed with a single keyboard shortcut.
-- Live "N selected" counter in the file picker.
+- Search and replace text in any combination of files — **only the files you explicitly select** are modified.
+- A focused, three-step wizard accessed with a single keyboard shortcut.
+- Native multi-file dialog (Ctrl/Cmd+click to select several).
 - Safe for open/unsaved documents — changes respect the VS Code document model.
 - Clear confirmation: total replacements, files updated, and failures (if any).
 - Zero dependencies. Pure VS Code API.
@@ -34,7 +34,7 @@ Press `Ctrl+Alt+F` (Linux/Windows) or `Cmd+Alt+F` (Mac) and follow the wizard:
 |------|-------------|----------|
 | 1 | Search input — type the text to find | `Enter` to continue, `Esc` to cancel |
 | 2 | Replace input — type the replacement (leave empty to delete) | `Enter` to continue, `Esc` to cancel |
-| 3 | File picker — type to filter, `Space` to toggle, `Enter` to confirm | `Tab`/`Shift+Tab` not needed — use type filter + arrows |
+| 3 | Native file dialog — pick one or many files, then choose "Apply Replacement" | Arrow keys / type-ahead to navigate, `Enter` to confirm, `Esc` to cancel |
 | 4 | Runs replacements and shows a summary notification | — |
 
 ### Example
@@ -54,9 +54,8 @@ Ctrl+Alt+F
 | `Ctrl+Alt+F` / `Cmd+Alt+F` | Open ScopeReplace wizard |
 | `Enter` | Accept current step and move to next |
 | `Esc` | Cancel the wizard at any step |
-| `Space` | Toggle file selection (file picker only) |
-| Arrow keys | Navigate file list (file picker only) |
-| Type (anywhere) | Filter file list in real time |
+| Arrow keys / type-ahead | Navigate and filter in the file dialog (step 3) |
+| `Ctrl`+click / `Cmd`+click | Select multiple files in the dialog |
 
 ## Try it out (development)
 
@@ -79,11 +78,11 @@ npm run compile
 npx @vscode/vsce package
 ```
 
-This produces a `ScopeReplace-0.0.1.vsix` file you can install via
+This produces a `ScopeReplace-0.0.2.vsix` file you can install via
 **Extensions > Install from VSIX...** or from the command line:
 
 ```bash
-code --install-extension ScopeReplace-0.0.1.vsix
+code --install-extension ScopeReplace-0.0.2.vsix
 ```
 
 ## Known limitations
@@ -91,7 +90,6 @@ code --install-extension ScopeReplace-0.0.1.vsix
 - **No regular expressions** — plain text search only (v1 scope).
 - **No preview/diff view** — replacements are applied directly.
 - **No undo management** — use `Ctrl+Z` per file if needed.
-- **No folder-based filtering** — all workspace files are listed.
 
 ## License
 

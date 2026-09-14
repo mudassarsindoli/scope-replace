@@ -1,11 +1,6 @@
 import * as vscode from 'vscode';
 
 const COMMAND_ID = 'ScopeReplace.findAndReplace';
-const MAX_RESULTS = 5000;
-
-interface FileItem extends vscode.QuickPickItem {
-  uri: vscode.Uri;
-}
 
 interface ReplacementResult {
   replacements: number;
@@ -74,46 +69,18 @@ async function promptForReplaceText(searchText: string): Promise<string | undefi
 }
 
 async function pickFiles(): Promise<vscode.Uri[] | undefined> {
-  const files = await vscode.workspace.findFiles('**/*', null, MAX_RESULTS);
-  if (files.length === 0) {
-    vscode.window.showWarningMessage('No files found in the workspace.');
-    return undefined;
-  }
+  const defaultUri = vscode.workspace.workspaceFolders?.[0]?.uri;
 
-  const workspacePath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? '';
-
-  const quickPick = vscode.window.createQuickPick<FileItem>();
-  quickPick.title = 'ScopeReplace: Select files to update';
-  quickPick.placeholder = 'Type to filter. Space toggles a file. Enter applies to selected.';
-  quickPick.canSelectMany = true;
-  quickPick.ignoreFocusOut = false;
-  quickPick.items = files.map((uri) => ({
-    label: vscode.workspace.asRelativePath(uri),
-    description: workspacePath && uri.fsPath.startsWith(workspacePath) ? '' : uri.fsPath,
-    uri,
-  }));
-
-  quickPick.onDidChangeSelection((selected) => {
-    quickPick.title = `ScopeReplace: Select files to update (${selected.length} selected)`;
+  const selected = await vscode.window.showOpenDialog({
+    title: 'ScopeReplace: Select files to update',
+    openLabel: 'Apply Replacement',
+    canSelectFolders: false,
+    canSelectFiles: true,
+    canSelectMany: true,
+    defaultUri,
   });
 
-  const result = await new Promise<vscode.Uri[] | undefined>((resolve) => {
-    const done = (value: vscode.Uri[] | undefined): void => {
-      quickPick.hide();
-      resolve(value);
-    };
-
-    quickPick.onDidAccept(() => {
-      done(quickPick.selectedItems.map((item) => item.uri));
-    });
-    quickPick.onDidHide(() => {
-      resolve(undefined);
-    });
-    quickPick.show();
-  });
-
-  quickPick.dispose();
-  return result;
+  return selected;
 }
 
 async function applyReplacements(
